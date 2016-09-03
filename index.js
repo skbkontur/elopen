@@ -1,4 +1,4 @@
-import exampleRoute from './server/routes/example';
+import indexesRoute from './server/routes/indexes';
 
 
 module.exports = function(kibana) {
@@ -13,12 +13,11 @@ module.exports = function(kibana) {
         main: 'plugins/elopen/app',
         icon: 'plugins/elopen/icon.svg'
       },
-      
     },
 
     init(server, options) {
       // Add server routes and initalize the plugin here
-      exampleRoute(server);
+      indexesRoute(server);
     }
     
 

@@ -7,13 +7,8 @@ import template from './templates/index.html';
 uiRoutes.enable();
 uiRoutes.when('/', {
     template,
-    resolve: {
-        currentTime($http) {
-            return $http.get('../api/elopen/example').then(function (resp) {
-                return resp.data.time;
-            });
-        }
-    }
+    controller: 'IndexCtrl',
+
 });
 
 
