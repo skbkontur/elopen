@@ -1,6 +1,6 @@
 {
   "name": "elopen",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Smooth Elasticsearch index opener",
   "main": "index.js",
   "license": "MIT",
@@ -8,38 +8,6 @@
     "type": "git",
     "url": "https://github.com/melnikk/elopen.git"
   },
-  "scripts": {
-    "lint": "eslint",
-    "start": "plugin-helpers start",
-    "test:server": "plugin-helpers test_server",
-    "test:browser": "plugin-helpers test_browser",
-    "build": "plugin-helpers build",
-    "postinstall": "plugin-helpers postinstall"
-  },
   "devDependencies": {
-    "@elastic/eslint-config-kibana": "0.0.2",
-    "@elastic/plugin-helpers": "5.0.0-beta1",
-    "autoprefixer": "5.1.1",
-    "autoprefixer-loader": "2.0.0",
-    "babel": "5.8.23",
-    "babel-cli": "^6.14.0",
-    "babel-core": "5.8.23",
-    "babel-eslint": "4.1.8",
-    "babel-loader": "5.3.2",
-    "babel-runtime": "5.8.20",
-    "css-loader": "0.17.0",
-    "eslint": "1.10.3",
-    "eslint-plugin-mocha": "1.1.0",
-    "jquery": "2.1.4",
-    "less": "2.5.1",
-    "less-loader": "2.2.0",
-    "loader-utils": "0.2.11",
-    "moment": "2.13.0",
-    "moment-timezone": "0.5.4",
-    "raw-loader": "0.5.1",
-    "rjs-repack-loader": "1.0.6",
-    "style-loader": "0.12.3",
-    "webpack": "1.12.15",
-    "webpack-directory-name-as-main": "1.0.0"
   }
 }
