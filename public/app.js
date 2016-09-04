@@ -1,15 +1,32 @@
 import uiRoutes from 'ui/routes';
 
-import 'ui/autoload/styles';
 import './less/main.less';
-import template from './templates/index.html';
+import dashboardTemplate from './templates/dashboard.html';
+import indexTemplate from './templates/index.html';
 
 uiRoutes.enable();
 uiRoutes.when('/', {
-    template,
-    controller: 'IndexCtrl',
-
+    template: dashboardTemplate,
+    controller: 'Dashboard',
+    resolve: {
+        indices($http) {
+            return $http.get('../elasticsearch/_cat/indices?format=json').then(function (resp) {
+                return resp;
+            });
+         }
+     }
+});
+uiRoutes.when('/index/{name}', {
+    template: indexTemplate,
+    controller: 'Index',
+    resolve: {
+        indices($http) {
+            return $http.get('../elasticsearch/_cat/indices?format=json').then(function (resp) {
+                return resp;
+            });
+         }
+     }
 });
 
-
-require('plugins/elopen/lib/controllers/IndexCtrl.js');
+require('plugins/elopen/lib/controllers/Dashboard.js');
+require('plugins/elopen/lib/controllers/Index.js');
