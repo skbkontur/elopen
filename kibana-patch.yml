@@ -1,0 +1,7 @@
+- hosts: all
+  tasks:
+    - name: patch kibana index api proxy create
+      lineinfile: dest=../../src/plugins/elasticsearch/index.js insertafter="exposeClient" line="{{ item }}"
+      with_items:
+        - "      createProxy(server, 'POST', '/{index}/_open');"
+        - "      createProxy(server, 'POST', '/{index}/_close');"
