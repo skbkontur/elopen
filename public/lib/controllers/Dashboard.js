@@ -5,17 +5,53 @@ var module = require('ui/modules').get('apps/elopen', []);
 
 module.controller('Dashboard', function ($scope, $route, $interval, $http) {
     $scope.title = 'Elopen';
-    $scope.description = 'Smooth Elasticsearch index opener';
+    $scope.description = 'Elasticsearch index opener';
 
+    var close;
     $scope.openIndex = function(index) {
+
         openIndex(index, $http)
+        // Don't close a new index if we are already closing
+        if ( angular.isDefined(close) ) return;
+
+        close = $interval(function() {
+            var url = '../elasticsearch/_cat/indices/'+index.index+'?format=json';
+            $http.get(url).then((response) => {
+                if(response.data[0].health != 'red') {
+                    index.status = response.data[0].status;
+                    if (angular.isDefined(close)) {
+                        $interval.cancel(close);
+                        close = undefined;
+                    }
+                }
+            });
+        }, 2);
     };
+
     $scope.verifyIndex = function(index) {
         verifyIndex(index, $http)
     };
     $scope.closeIndex = function(index) {
         closeIndex(index, $http)
     };
+
+
+    $scope.stopFight = function() {
+        if (angular.isDefined(stop)) {
+            $interval.cancel(stop);
+            stop = undefined;
+        }
+    };
+
+    $scope.resetFight = function() {
+        $scope.blood_1 = 100;
+        $scope.blood_2 = 120;
+    };
+
+    $scope.$on('$destroy', function() {
+        // Make sure that the interval is destroyed too
+        $scope.stopFight();
+    });
 
     $http.get('../elasticsearch/_cat/indices?format=json').then((response) => {
         $scope.indices = [];
