@@ -3,7 +3,7 @@ import moment from 'moment';
 
 var module = require('ui/modules').get('apps/elopen', []);
 
-module.controller('Dashboard', function ($scope, $route, $interval, $http) {
+module.controller('Dashboard', ['$scope', 'orderByFilter', '$route', '$interval', '$http', function ($scope, orderBy, $route, $interval, $http) {
     $scope.title = 'Elopen';
     $scope.description = 'Elasticsearch index opener';
 
@@ -43,6 +43,7 @@ module.controller('Dashboard', function ($scope, $route, $interval, $http) {
     $http.get('../elasticsearch/_cat/indices?format=json').then((response) => {
         $scope.indices = [];
         var indCache = [];
+        response.data = orderBy(response.data, "index");
         for (var i = 0; i < response.data.length; i++) {
             var name = extractName(response.data[i].index);
 
@@ -55,6 +56,7 @@ module.controller('Dashboard', function ($scope, $route, $interval, $http) {
     var indexName = $route.current.pathParams.index;
     if(indexName !=undefined) {
         $http.get('../elasticsearch/_cat/indices/'+indexName+'-*?format=json').then((response) => {
+            response.data = orderBy(response.data, "index", true);
             $scope.indexName = indexName;
             $scope.dates = {};
             for (var i = 0; i < response.data.length; i++) {
@@ -71,7 +73,7 @@ module.controller('Dashboard', function ($scope, $route, $interval, $http) {
             }
         });
     }
-});
+}]);
 
 var openIndex = function(index, http) {
     http.post("../elasticsearch/"+index.index+"/_open").then((response) => {

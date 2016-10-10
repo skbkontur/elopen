@@ -22,7 +22,7 @@
                 <div ng-repeat="day in days" class="elopen-day row">
                     <div class="day-name col-md-3">{{ day.index.index }}</div>
                     <div class="day-action col-md-1">
-                        <button type="button" class="btn btn-warning btn-xs" ng-if="day.index.status=='open'" ng-click="closeIndex(day.index)">Close</button>
+                        <!-- button type="button" class="btn btn-warning btn-xs" ng-if="day.index.status=='open'" ng-click="closeIndex(day.index)">Close</button -->
                         <button type="button" class="btn btn-preloader btn-xs progress"  ng-if="day.index.status=='verifying'" ng-click="verifyIndex(day.index)">
                             <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                         </button>
