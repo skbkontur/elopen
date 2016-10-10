@@ -35,19 +35,6 @@ module.controller('Dashboard', function ($scope, $route, $interval, $http) {
         closeIndex(index, $http)
     };
 
-
-    $scope.stopFight = function() {
-        if (angular.isDefined(stop)) {
-            $interval.cancel(stop);
-            stop = undefined;
-        }
-    };
-
-    $scope.resetFight = function() {
-        $scope.blood_1 = 100;
-        $scope.blood_2 = 120;
-    };
-
     $scope.$on('$destroy', function() {
         // Make sure that the interval is destroyed too
         $scope.stopFight();
@@ -119,7 +106,7 @@ var extractDate = function(el) {
     if(parts.length>1) {
         var date = parts[parts.length - 1];
         var dateParts = date.split('.');
-        var d = new Date(dateParts[0], dateParts[1], dateParts[2],0,0,0);
+        var d = new Date(dateParts[0], dateParts[1]-1, dateParts[2],0,0,0);
         var formatter = new Intl.DateTimeFormat(['ru', 'en'], {
             month: "long",
             year: "numeric",
