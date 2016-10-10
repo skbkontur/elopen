@@ -54,7 +54,7 @@ module.controller('Dashboard', function ($scope, $route, $interval, $http) {
     });
     var indexName = $route.current.pathParams.index;
     if(indexName !=undefined) {
-        $http.get('../elasticsearch/_cat/indices?'+indexName+'-*&format=json').then((response) => {
+        $http.get('../elasticsearch/_cat/indices/'+indexName+'-*?format=json').then((response) => {
             $scope.indexName = indexName;
             $scope.dates = {};
             for (var i = 0; i < response.data.length; i++) {
