@@ -8,11 +8,21 @@ uiRoutes.enable();
 uiRoutes.when('/', {
     template: template,
     controller: 'Dashboard',
+    resolve: {
+        indexPatternIds: function (courier) {
+            return courier.indexPatterns.getIds();
+        }
+    }
 });
 
 uiRoutes.when('/index/:index', {
     template: template,
     controller: 'Dashboard',
+    resolve: {
+        indexPatternIds: function (courier) {
+            return courier.indexPatterns.getIds();
+        }
+    }
 });
 
 require('plugins/elopen/lib/controllers/Dashboard.js');

@@ -20,9 +20,9 @@
             <div ng-repeat="(month, days) in dates" class="elopen-month">
                 <h4>{{ month }}</h4>
                 <div ng-repeat="day in days" class="elopen-day row">
-                    <div class="day-name col-md-3">{{ day.index.index }}</div>
-                    <div class="day-action col-md-1">
-                        <!-- button type="button" class="btn btn-warning btn-xs" ng-if="day.index.status=='open'" ng-click="closeIndex(day.index)">Close</button -->
+                    <div class="day-name col-md-12">
+                        <div class="index-name">{{ day.index.index }}</div>
+                        <button type="button" disabled="true" class="btn btn-success btn-xs" ng-if="day.index.status=='open'">Opened</button>
                         <button type="button" class="btn btn-preloader btn-xs progress"  ng-if="day.index.status=='verifying'" ng-click="verifyIndex(day.index)">
                             <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                         </button>

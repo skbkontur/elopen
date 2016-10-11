@@ -6,11 +6,10 @@ var module = require('ui/modules').get('apps/elopen', []);
 module.controller('Dashboard', ['$scope', 'orderByFilter', '$route', '$interval', '$http', function ($scope, orderBy, $route, $interval, $http) {
     $scope.title = 'Elopen';
     $scope.description = 'Elasticsearch index opener';
-
     var close;
     $scope.openIndex = function(index) {
 
-        openIndex(index, $http)
+        openIndex(index, $http);
         // Don't close a new index if we are already closing
         if ( angular.isDefined(close) ) return;
 
@@ -35,27 +34,10 @@ module.controller('Dashboard', ['$scope', 'orderByFilter', '$route', '$interval'
         closeIndex(index, $http)
     };
 
-    $scope.$on('$destroy', function() {
-        // Make sure that the interval is destroyed too
-        $scope.stopFight();
-    });
-
-    $http.get('../elasticsearch/_cat/indices?format=json').then((response) => {
-        $scope.indices = [];
-        var indCache = [];
-        response.data = orderBy(response.data, "index");
-        for (var i = 0; i < response.data.length; i++) {
-            var name = extractName(response.data[i].index);
-
-            if(name!=undefined && indCache[name]!=true) {
-                $scope.indices.push(name);
-                indCache[name] = true;
-            }
-        }
-    });
+    $scope.indices = $route.current.locals.indexPatternIds;
     var indexName = $route.current.pathParams.index;
     if(indexName !=undefined) {
-        $http.get('../elasticsearch/_cat/indices/'+indexName+'-*?format=json').then((response) => {
+        $http.get('../elasticsearch/_cat/indices/'+indexName+'?format=json').then((response) => {
             response.data = orderBy(response.data, "index", true);
             $scope.indexName = indexName;
             $scope.dates = {};

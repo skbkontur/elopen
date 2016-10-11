@@ -1,13 +1,4 @@
 export default function (server) {
-
-    server.route({
-            path: '/api/elopen/index',
-            method: 'GET',
-            handler(req, reply) {
-                reply("Hello World");
-            }
-        });
-
     server.route({
             path: '/api/elopen/index/{name}',
             method: 'GET',
