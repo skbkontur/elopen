@@ -82,8 +82,8 @@ var extractNames = function(names) {
         var name = names[i].replace("[", "").replace("]YYYY.MM.DD", "*");
         if(undefined == map[name]) {
             map[name] = true;
+            result.push(name);
         }
-        result.push(name);
     }
     return result;
 };
