@@ -34,7 +34,7 @@ module.controller('Dashboard', ['$scope', 'orderByFilter', '$route', '$interval'
         closeIndex(index, $http)
     };
 
-    $scope.indices = extractNames($route.current.locals.indexPatternIds);
+    $scope.indices = extractNames($route.current.locals.indexPatternIds).sort();
     var indexName = $route.current.pathParams.index;
     if(indexName !=undefined) {
         $http.get('../elasticsearch/_cat/indices/'+indexName+'?format=json').then((response) => {
@@ -94,17 +94,19 @@ var extractDate = function(el) {
     if(parts.length>1) {
         var date = parts[parts.length - 1];
         var dateParts = date.split('.');
-        var d = new Date(dateParts[0], dateParts[1]-1, dateParts[2],0,0,0);
-        var formatter = new Intl.DateTimeFormat(['ru', 'en'], {
-            month: "long",
-            year: "numeric",
-        });
+        if(dateParts.length==3) {
+            var d = new Date(dateParts[0], dateParts[1]-1, dateParts[2],0,0,0);
+            var formatter = new Intl.DateTimeFormat(['ru', 'en'], {
+                month: "long",
+                year: "numeric",
+              });
 
-        var month = formatter.format(d);
-        return {
-            month: month,
-            date: date,
-        };
+            var month = formatter.format(d);
+            return {
+                month: month,
+                date: date,
+            };
+        }
     }
     return undefined;
 };
