@@ -10,7 +10,8 @@ uiRoutes.when('/', {
     controller: 'Dashboard',
     resolve: {
         indexPatternIds: function (courier) {
-            return courier.indexPatterns.getIds();
+            var indexes = courier.indexPatterns.getIds();
+            return indexes;
         }
     }
 });

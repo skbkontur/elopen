@@ -34,7 +34,7 @@ module.controller('Dashboard', ['$scope', 'orderByFilter', '$route', '$interval'
         closeIndex(index, $http)
     };
 
-    $scope.indices = $route.current.locals.indexPatternIds;
+    $scope.indices = extractNames($route.current.locals.indexPatternIds);
     var indexName = $route.current.pathParams.index;
     if(indexName !=undefined) {
         $http.get('../elasticsearch/_cat/indices/'+indexName+'?format=json').then((response) => {
@@ -75,13 +75,17 @@ var closeIndex = function(index, http) {
 
 
 
-var extractName = function(el) {
-    var parts = el.split('-');
-    if(parts.length>1) {
-        name = parts.slice(0, -1).join('-');
-        return name;
+var extractNames = function(names) {
+    var map = {};
+    var result = [];
+    for(var i=0; i<names.length; i++) {
+        var name = names[i].replace("[", "").replace("]YYYY.MM.DD", "*");
+        if(undefined == map[name]) {
+            map[name] = true;
+        }
+        result.push(name);
     }
-    return undefined;
+    return result;
 };
 
 
