@@ -7,11 +7,13 @@ module.controller('Dashboard', ['$scope', 'orderByFilter', '$route', '$interval'
     $scope.title = 'Elopen';
     $scope.description = 'Elasticsearch index opener';
     var close;
+
     $scope.openIndex = function(index) {
 
-        openIndex(index, $http);
         // Don't close a new index if we are already closing
         if ( angular.isDefined(close) ) return;
+
+        openIndex(index, $http);
 
         close = $interval(function() {
             var url = '../elasticsearch/_cat/indices/'+index.index+'?format=json';
