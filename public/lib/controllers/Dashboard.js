@@ -13,69 +13,48 @@ module.controller('Dashboard', ['$scope', 'orderByFilter', '$route', '$interval'
         // Don't close a new index if we are already closing
         if ( angular.isDefined(close) ) return;
 
-        openIndex(index, $http);
-
-        close = $interval(function() {
-            var url = '../elasticsearch/_cat/indices/'+index.index+'?format=json';
-            $http.get(url).then((response) => {
-                if(response.data[0].health != 'red') {
-                    index.status = response.data[0].status;
-                    if (angular.isDefined(close)) {
-                        $interval.cancel(close);
-                        close = undefined;
+        index.status = 'verifying';
+        close = true;
+        http.post("../elasticsearch/"+index.index+"/_open").then((response) => {
+            close = $interval(function() {
+                var url = '../elasticsearch/_cat/indices/'+index.index+'?format=json';
+                $http.get(url).then((response) => {
+                    var currentIndex = response.data[0];
+                    if(currentIndex.health != 'red') {
+                        index.status = currentIndex.status;
+                        if (angular.isDefined(close)) {
+                            $interval.cancel(close);
+                            close = undefined;
+                        }
                     }
-                }
-            });
-        }, 2);
-    };
-
-    $scope.verifyIndex = function(index) {
-        verifyIndex(index, $http)
-    };
-    $scope.closeIndex = function(index) {
-        closeIndex(index, $http)
+                });
+            }, 2);
+        });
     };
 
     $scope.indices = extractNames($route.current.locals.indexPatternIds).sort();
     var indexName = $route.current.pathParams.index;
     if(indexName !=undefined) {
         $http.get('../elasticsearch/_cat/indices/'+indexName+'?format=json').then((response) => {
-            response.data = orderBy(response.data, "index", true);
+            var indexes = orderBy(response.data, "index", true);
             $scope.indexName = indexName;
             $scope.dates = {};
-            for (var i = 0; i < response.data.length; i++) {
-                var date = extractDate(response.data[i].index);
+            for (var i = 0; i < indexes.length; i++) {
+                var index = response.data[i]
+                var date = extractDate(index.index);
                 if(date!=undefined) {
                     if ($scope.dates[date.month] == undefined) {
                         $scope.dates[date.month] = [];
                     }
                     $scope.dates[date.month].push({
                         date: date,
-                        index: response.data[i],
+                        index: index,
                     });
                 }
             }
         });
     }
 }]);
-
-var openIndex = function(index, http) {
-    http.post("../elasticsearch/"+index.index+"/_open").then((response) => {
-        index.status = 'verifying';
-    });
-};
-
-var verifyIndex = function(index, http) {
-    index.status = 'open';
-};
-
-var closeIndex = function(index, http) {
-    http.post("../elasticsearch/"+index.index+"/_close").then((response) => {
-        index.status = 'close';
-    });
-};
-
-
 
 var extractNames = function(names) {
     var map = {};
