@@ -15,7 +15,7 @@ module.controller('Dashboard', ['$scope', 'orderByFilter', '$route', '$interval'
 
         index.status = 'verifying';
         close = true;
-        http.post("../elasticsearch/"+index.index+"/_open").then((response) => {
+        $http.post("../elasticsearch/"+index.index+"/_open").then((response) => {
             close = $interval(function() {
                 var url = '../elasticsearch/_cat/indices/'+index.index+'?format=json';
                 $http.get(url).then((response) => {
@@ -28,7 +28,7 @@ module.controller('Dashboard', ['$scope', 'orderByFilter', '$route', '$interval'
                         }
                     }
                 });
-            }, 2);
+            }, 2000);
         });
     };
 
