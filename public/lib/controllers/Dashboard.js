@@ -20,8 +20,10 @@ module.controller('Dashboard', ['$scope', 'orderByFilter', '$route', '$interval'
                 var url = '../elasticsearch/_cat/indices/'+index.index+'?format=json';
                 $http.get(url).then((response) => {
                     var currentIndex = response.data[0];
-                    if(currentIndex.health != 'red') {
-                        index.status = currentIndex.status;
+                    if(currentIndex.health == 'green') {
+                        index['status']         = currentIndex['status'];
+                        index['docs.count']     = currentIndex['docs.count'];
+                        index['pri.store.size'] = currentIndex['pri.store.size']
                         if (angular.isDefined(close)) {
                             $interval.cancel(close);
                             close = undefined;
@@ -42,7 +44,7 @@ module.controller('Dashboard', ['$scope', 'orderByFilter', '$route', '$interval'
             for (var i = 0; i < indexes.length; i++) {
                 var index = indexes[i]
                 var date = extractDate(index.index);
-                if(date!=undefined) {
+                if (date!=undefined) {
                     if ($scope.dates[date.month] == undefined) {
                         $scope.dates[date.month] = [];
                     }
