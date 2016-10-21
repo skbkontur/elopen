@@ -40,7 +40,7 @@ module.controller('Dashboard', ['$scope', 'orderByFilter', '$route', '$interval'
             $scope.indexName = indexName;
             $scope.dates = {};
             for (var i = 0; i < indexes.length; i++) {
-                var index = response.data[i]
+                var index = indexes[i]
                 var date = extractDate(index.index);
                 if(date!=undefined) {
                     if ($scope.dates[date.month] == undefined) {
