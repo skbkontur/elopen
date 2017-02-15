@@ -1,4 +1,5 @@
 # elopen
+[![Build Status](https://travis-ci.org/skbkontur/elopen.svg?branch=master)](https://travis-ci.org/skbkontur/elopen)
 
 > Smooth Elasticsearch index opener
 
