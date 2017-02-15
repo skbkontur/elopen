@@ -38,7 +38,12 @@ module.controller('Dashboard', ['$scope', 'orderByFilter', '$route', '$interval'
     var indexName = $route.current.pathParams.index;
     if(indexName !=undefined) {
         $http.get('../elasticsearch/_cat/indices/'+indexName+'?format=json').then((response) => {
-            var indexes = orderBy(response.data, "index", true);
+            var indexes = response.data;
+            for (var i = 0; i < indexes.length; i++) {
+              var date = extractDate(indexes[i].index);
+              indexes[i].date = date.date;
+            }
+            indexes = orderBy(indexes, "date", true);
             $scope.indexName = indexName;
             $scope.dates = {};
             for (var i = 0; i < indexes.length; i++) {

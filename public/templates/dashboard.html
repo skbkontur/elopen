@@ -24,11 +24,11 @@
                           <h5>{{ day.index.index }}</h5>
                         </div>
                         <div class="col-md-2">
-                          <button type="button" disabled="true" class="btn btn-success btn-xs" ng-if="day.index.status=='open'">Opened</button>
+                          <button type="button" disabled="true" class="btn btn-success btn-xs" ng-if="day.index.status=='open'">Открыт</button>
                           <button type="button" class="btn btn-preloader btn-xs progress"  ng-if="day.index.status=='verifying'">
                             <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                           </button>
-                          <button type="button" class="btn btn-success btn-xs" ng-if="day.index.status=='close'" ng-click="openIndex(day.index)">Open</button>
+                          <button type="button" class="btn btn-success btn-xs" ng-if="day.index.status=='close'" ng-click="openIndex(day.index)">Открыть</button>
                         </div>
                         <div class="day-docs col-md-4" ng-if="day.index.status=='open'">Документов: {{ day.index['docs.count'] }} ({{ day.index['pri.store.size'] }})</div>
                 </div>
