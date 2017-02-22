@@ -82,6 +82,9 @@ var extractDate = function(el) {
     if(parts.length>1) {
         var date = parts[parts.length - 1];
         var dateParts = date.split('.');
+        if(dateParts.length==2) {
+          dateParts.push(1)
+        }
         if(dateParts.length==3) {
             var d = new Date(dateParts[0], dateParts[1]-1, dateParts[2],0,0,0);
             var formatter = new Intl.DateTimeFormat(['ru', 'en'], {
