@@ -1,25 +1,22 @@
-import indexesRoute from './server/routes/indexes';
+import indexesRoute from './server/routes/indices';
 
+export default function (kibana) {
+    return new kibana.Plugin({
+        require: ['elasticsearch'],
+        name: 'elopen-plugin',
+        uiExports: {
 
-module.exports = function(kibana) {
-  return new kibana.Plugin({
-    require: ['elasticsearch'],
+            app: {
+                title: 'Elopen',
+                description: 'An awesome Kibana plugin',
+                main: 'plugins/elopen/app',
+                icon: 'plugins/elopen/icon.svg'
+            },
+        },
 
-    uiExports: {
-      
-      app: {
-        title: 'Elopen',
-        description: 'Smooth Elasticsearch index opener',
-        main: 'plugins/elopen/app',
-        icon: 'plugins/elopen/icon.svg'
-      },
-    },
+        init(server) {
+            indexesRoute(server);
+        }
 
-    init(server, options) {
-      // Add server routes and initalize the plugin here
-      indexesRoute(server);
-    }
-    
-
-  });
+    });
 };
