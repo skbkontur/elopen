@@ -2,8 +2,8 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="well">
-                <h2>{{ title }}</h2>
-                <p class="lead">{{ description }}</p>
+                <h1>{{ title }}</h1>
+                <h4 class="lead">{{ description }}</h4>
             </div>
         </div>
     </div>
@@ -30,7 +30,7 @@
                           </button>
                           <button type="button" class="btn btn-success btn-xs" ng-if="day.index.status=='close'" ng-click="openIndex(day.index)">Открыть</button>
                         </div>
-                        <div class="day-docs col-md-4" ng-if="day.index.status=='open'">Документов: {{ day.index['docs.count'] }} ({{ day.index['pri.store.size'] }})</div>
+                        <!-- <div class="day-docs col-md-4" ng-if="day.index.status=='open'">Документов: {{ day.index['docs.count'] }} ({{ day.index['pri.store.size'] }})</div> -->
                 </div>
             </div>
         </div>
