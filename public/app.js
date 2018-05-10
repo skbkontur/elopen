@@ -1,10 +1,7 @@
-import {uiModules} from 'ui/modules';
+import { uiModules } from 'ui/modules';
 import uiRoutes from 'ui/routes';
 import 'angular-ui-bootstrap';
-import 'ui/autoload/styles';
-import './less/main.less';
 
-// import template from './templates/index.html';
 import template from './templates/dashboard.html';
 
 uiRoutes.enable();
@@ -21,46 +18,32 @@ class IndicesObj {
   }
 }
 
-// сборка данных с сервера в единый массив
-const buildDate = orignData => {
+const buildDate = data => {
   const newOrignData = [];
-  for (const key in orignData) {
-    if (orignData.hasOwnProperty(key)) {
-      const obj = new IndicesObj(key, orignData[key].state);
+  for (const key in data) {
+    if (data.hasOwnProperty(key)) {
+      const obj = new IndicesObj(key, data[key].state);
       newOrignData.push(obj);
     }
   }
   return newOrignData;
 };
 
-const buildIndexes = originDate => {
-  const result = [];
-  for (const item in originDate) {
-    if (originDate.hasOwnProperty(item)) {
-      // let tempResult = originDate[item].indexName.match(/.*(?=\d{4}\.\d{2}\.\d{2})/gi);
-      // if (result.indexOf(`${tempResult[0]}*`) === -1) result.push(`${tempResult[0]}*`);
-      result.push(originDate[item].indexName);
-    }
-  }
-  return result;
-};
-
-const extractDate = (el) => {
-  const parts = el.split('-');
+const extractDate = data => {
+  const parts = data.split('-');
   if (parts.length > 1) {
-    let date = parts[parts.length - 1];
-    let dateParts = date.split('.');
+    const date = parts[parts.length - 1];
+    const dateParts = date.split('.');
     if (dateParts.length === 2) {
-      dateParts.push(1)
+      dateParts.push(1);
     }
     if (dateParts.length === 3) {
-      let d = new Date(dateParts[0], dateParts[1] - 1, dateParts[2], 0, 0, 0);
-      let formatter = new Intl.DateTimeFormat(['ru', 'en'], {
+      const d = new Date(dateParts[0], dateParts[1] - 1, dateParts[2], 0, 0, 0);
+      const formatter = new Intl.DateTimeFormat(['ru', 'en'], {
         month: 'long',
         year: 'numeric'
       });
-
-      let month = formatter.format(d);
+      const month = formatter.format(d);
       return {
         month: month,
         date: date,
@@ -74,7 +57,7 @@ const extractNames = names => {
   const map = {};
   const result = [];
   for (let i = 0; i < names.length; i++) {
-    let name = names[i].replace(/(\d{4}).(\d{2}).(\d{2})/g, '*');
+    const name = names[i].indexName.replace(/(\d{4}).(\d{2}).(\d{2})/g, '*');
     if (undefined === map[name]) {
       map[name] = true;
       result.push(name);
@@ -83,68 +66,64 @@ const extractNames = names => {
   return result;
 };
 
-
 uiModules
-  .get('app/indies_view', ['ui.bootstrap'])
-  .controller('indiesViewHome', ($http, $scope) => {
+  .get('app/indies_view', [])
+  .controller('indiesViewHome', ($http, $scope, $filter) => {
     $scope.title = 'Elopen';
     $scope.description = 'Elasticsearch index opener';
     $http
       .get('../api/elopen/_stats')
       .then((response) => {
-        $scope.date = buildDate(response.data.metadata.indices);
-        // console.log($scope.date);
+        $scope.indices = buildDate(response.data.metadata.indices);
+        // add date to main index
+        for (let i = 0; i < $scope.indices.length; i++) {
+          const date = extractDate($scope.indices[i].indexName);
+          $scope.indices[i].date = date.date;
+        }
+        $scope.indices = $filter('orderBy')($scope.indices, 'date', true);
+        $scope.names = extractNames($scope.indices);
         $scope.dates = {};
+      });
 
-        $scope.test = buildIndexes($scope.date);
-        $scope.indices = extractNames(buildIndexes($scope.date));
-        // console.log($scope.date);
-        // console.log($scope.indices);
+    $scope.openCurrentIndex = indexName => {
+      console.log(indexName);
+      indexName.status = 'verifying';
+      $http
+        .get(`../api/elopen/index/${indexName.name}/_open`)
+        .then((response) => {
+          if (response.status === 200) {
+            indexName.status = 'open';
+          }
+          else {
+            indexName.status = 'error';
+            console.log('Error with elasticsearch on open index');
+          }
+        });
+    };
 
-        // for (let i = 0; i < indexes.length; i++) {
-        //   let date = extractDate(indexes[i].index);
-        //   indexes[i].date = date.date;
-        // }
-
-        // indexes = orderBy(indexes, "date", true);
-        // $scope.indexName = indexName;
-
-        for (let i = 0; i < $scope.test.length; i++) {
-          let index = $scope.test[i];
-          let status = $scope.date[i].status;
-          let date = extractDate($scope.date[i].indexName);
+    $scope.searchName = name => {
+      const indexSearchName = name.substr(0, name.length - 1);
+      const regexp = new RegExp(`${indexSearchName}.*`);
+      $scope.dates = {};
+      for (let i = 0; i < $scope.indices.length; i++) {
+        if($scope.indices[i].indexName.match(regexp)) {
+          const index = $scope.indices[i].indexName;
+          const status = $scope.indices[i].status;
+          const date = extractDate($scope.indices[i].indexName);
           if (date !== undefined) {
             if ($scope.dates[date.month] === undefined) {
               $scope.dates[date.month] = [];
             }
             $scope.dates[date.month].push({
-              date: date,
+              date: date.date,
               index: {
-                index: index,
+                name: index,
                 status: status
               }
             });
           }
         }
-
-        console.log($scope.dates);
-
-        // работает
-        // $scope.test = extractDate($scope.date[0].indexName);
-        // console.log($scope.test);
-
-        // console.log($scope.date);
-        // $scope.indices = buildIndexes($scope.date);
-        // console.log($scope.indices);
-      });
-
-    // открть индекс
-    $scope.openCurrentIndex = (indexName) => {
-      $http
-        .get('../api/elopen/index/' + indexName + '/_open')
-        .then((response) => {
-          if (response.status === 200) console.log('ok');
-          console.log('err');
-        });
+      }
     };
+
   });

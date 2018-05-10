@@ -8,30 +8,12 @@ export default function (server) {
   server.route({
     path: '/api/elopen/_stats',
     method: 'GET',
-    // переехал на другой метод api
     handler(req, reply) {
       client.cluster.state({
         metric: 'metadata',
         human: true,
       }, function (err, response) {
         reply(response);
-      });
-    }
-  });
-  // не понял зачем нужен маршрут
-  server.route({
-    path: '/api/elopen/index/{name}',
-    method: 'GET',
-    handler(req, reply) {
-      const name = req.params.name;
-      client.cluster.state({
-        metric: 'metadata',
-        index: name,
-        human: true,
-      }, (err, response) => {
-        reply(
-          response.metadata.indices[name]
-        );
       });
     }
   });
