@@ -71,19 +71,22 @@ uiModules
   .controller('indiesViewHome', ($http, $scope, $filter) => {
     $scope.title = 'Elopen';
     $scope.description = 'Elasticsearch index opener';
-    $http
-      .get('../api/elopen/_stats')
-      .then((response) => {
-        $scope.indices = buildDate(response.data.metadata.indices);
-        // add date to main index
-        for (let i = 0; i < $scope.indices.length; i++) {
-          const date = extractDate($scope.indices[i].indexName);
-          if(date) $scope.indices[i].date = date.date;
-        }
-        $scope.indices = $filter('orderBy')($scope.indices, 'date', true);
-        $scope.names = extractNames($scope.indices);
-        $scope.dates = {};
-      });
+
+    $scope.init = () => {
+      $http
+        .get('../api/elopen/_stats')
+        .then((response) => {
+          $scope.indices = buildDate(response.data.metadata.indices);
+          for (let i = 0; i < $scope.indices.length; i++) {
+            const date = extractDate($scope.indices[i].indexName);
+            if(date) $scope.indices[i].date = date.date;
+          }
+          $scope.indices = $filter('orderBy')($scope.indices, 'date', true);
+          $scope.names = extractNames($scope.indices);
+          $scope.dates = {};
+        });
+    };
+    $scope.init();
 
     $scope.openCurrentIndex = indexName => {
       indexName.status = 'verifying';
@@ -98,6 +101,7 @@ uiModules
             console.log('Error with elasticsearch on open index');
           }
         });
+      setTimeout($scope.init, 1000);
     };
 
     $scope.searchName = name => {
