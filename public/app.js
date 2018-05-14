@@ -78,7 +78,7 @@ uiModules
         // add date to main index
         for (let i = 0; i < $scope.indices.length; i++) {
           const date = extractDate($scope.indices[i].indexName);
-          $scope.indices[i].date = date.date;
+          if(date) $scope.indices[i].date = date.date;
         }
         $scope.indices = $filter('orderBy')($scope.indices, 'date', true);
         $scope.names = extractNames($scope.indices);
@@ -86,7 +86,6 @@ uiModules
       });
 
     $scope.openCurrentIndex = indexName => {
-      console.log(indexName);
       indexName.status = 'verifying';
       $http
         .get(`../api/elopen/index/${indexName.name}/_open`)
