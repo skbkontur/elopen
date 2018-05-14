@@ -69,9 +69,8 @@ const extractNames = names => {
 uiModules
   .get('app/indies_view', [])
   .controller('indiesViewHome', ($http, $scope, $filter) => {
-    $scope.title = 'Elopen';
-    $scope.description = 'Elasticsearch index opener';
 
+    // get from api
     $scope.init = () => {
       $http
         .get('../api/elopen/_stats')
@@ -83,7 +82,8 @@ uiModules
           }
           $scope.indices = $filter('orderBy')($scope.indices, 'date', true);
           $scope.names = extractNames($scope.indices);
-          $scope.dates = {};
+          $scope.names = $filter('orderBy')($scope.names);
+          $scope.searchName($scope.names[0]);
         });
     };
     $scope.init();
@@ -104,6 +104,12 @@ uiModules
       setTimeout($scope.init, 1000);
     };
 
+    // for empty obj
+    $scope.checkObj = name => {
+      return Object.keys(name).length === 0;
+    };
+
+    // give me everything by name
     $scope.searchName = name => {
       const indexSearchName = name.substr(0, name.length - 1);
       const regexp = new RegExp(`${indexSearchName}.*`);
