@@ -111,27 +111,32 @@ uiModules
 
     // give me everything by name
     $scope.searchName = name => {
-      const indexSearchName = name.substr(0, name.length - 1);
-      const regexp = new RegExp(`${indexSearchName}.*`);
-      $scope.dates = {};
-      for (let i = 0; i < $scope.indices.length; i++) {
-        if($scope.indices[i].indexName.match(regexp)) {
-          const index = $scope.indices[i].indexName;
-          const status = $scope.indices[i].status;
-          const date = extractDate($scope.indices[i].indexName);
-          if (date !== undefined) {
-            if ($scope.dates[date.month] === undefined) {
-              $scope.dates[date.month] = [];
-            }
-            $scope.dates[date.month].push({
-              date: date.date,
-              index: {
-                name: index,
-                status: status
+      if (name[name.length - 1] === '*') {
+        const indexSearchName = name.substr(0, name.length - 1);
+        const regexp = new RegExp(`${indexSearchName}.*`);
+        $scope.dates = {};
+        for (let i = 0; i < $scope.indices.length; i++) {
+          if($scope.indices[i].indexName.match(regexp)) {
+            const index = $scope.indices[i].indexName;
+            const status = $scope.indices[i].status;
+            const date = extractDate($scope.indices[i].indexName);
+            if (date !== undefined) {
+              if ($scope.dates[date.month] === undefined) {
+                $scope.dates[date.month] = [];
               }
-            });
+              $scope.dates[date.month].push({
+                date: date.date,
+                index: {
+                  name: index,
+                  status: status
+                }
+              });
+            }
           }
         }
+      }
+      else {
+        $scope.dates = {};
       }
     };
 
