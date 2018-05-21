@@ -57,10 +57,12 @@ const extractNames = names => {
   const map = {};
   const result = [];
   for (let i = 0; i < names.length; i++) {
-    const name = names[i].indexName.replace(/(\d{4}).(\d{2}).(\d{2})/g, '*');
-    if (undefined === map[name]) {
-      map[name] = true;
-      result.push(name);
+    if (names[i].indexName[0] != '.') {
+      const name = names[i].indexName.replace(/(\d{4}).(\d{2}).(\d{2})/g, '*');
+      if (undefined === map[name]) {
+        map[name] = true;
+        result.push(name);
+      }
     }
   }
   return result;
@@ -77,8 +79,10 @@ uiModules
         .then((response) => {
           $scope.indices = buildDate(response.data.metadata.indices);
           for (let i = 0; i < $scope.indices.length; i++) {
-            const date = extractDate($scope.indices[i].indexName);
-            if(date) $scope.indices[i].date = date.date;
+            if ($scope.indices[i].indexName[0] != '.') {
+              const date = extractDate($scope.indices[i].indexName)
+              if(date) $scope.indices[i].date = date.date;
+            }
           }
           $scope.indices = $filter('orderBy')($scope.indices, 'date', true);
           $scope.names = extractNames($scope.indices);
