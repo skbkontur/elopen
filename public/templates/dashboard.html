@@ -10,7 +10,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-4">
+        <div class="col-md-6">
             <h4>Доступные индексы</h4>
             <div class="well">
               <ul class="indexList">
@@ -20,7 +20,7 @@
               </ul>
             </div>
         </div>
-        <div class="col-md-8">
+        <div class="col-md-6">
             <div class="no-data" ng-if="checkObj(dates)">
               <h5 style="text-align:center;padding-top:50px;">Тут ничего нет. Как жаль</h5>
               <h5 style="text-align:center;">¯\_(ツ)_/¯</h5>
@@ -28,10 +28,10 @@
             <div ng-repeat="(month, indices) in dates" class="elopen-month">
                 <h4>{{ month }}</h4>
                 <div ng-repeat="index in indices" class="elopen-day row" style="padding: 10px">
-                        <div class="index-name col-md-6">
-                          <h7>{{ index.index.name }}</h7>
+                        <div class="index-name col-md-10">
+                          <p>{{ index.index.name }}</p>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                           <button type="button" disabled="true" style="padding: 0; width: 100px;" class="btn btn-success btn-xs" ng-if="index.index.status=='open'">Открыт</button>
                           <button type="button" class="btn btn-success btn-xs" style="padding: 0; width: 100px;" ng-if="index.index.status=='verifying'">
                             <div class="progress-bar progress-bar-success progress-bar-striped active" style="background-color:#28a745; width:100%;height: 29px;padding: 9px;margin: 0px;" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:100%"></div>

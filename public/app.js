@@ -30,14 +30,17 @@ uiModules
             }
           }
           $scope.indices = $filter('orderBy')($scope.indices, 'date', true);
-          console.log($scope.indices);
           $scope.names = extractNames($scope.indices);
           $scope.names = $filter('orderBy')($scope.names);
-          console.log($scope.names);
           $scope.searchName($scope.names[0]);
         });
     };
     $scope.init();
+
+    // for empty obj
+    $scope.checkObj = name => {
+      return Object.keys(name).length === 0;
+    };
 
     $scope.openCurrentIndex = indexName => {
       indexName.status = 'verifying';
@@ -60,7 +63,6 @@ uiModules
       if (name[name.length - 1] === '*') {
         const indexSearchName = name.substr(0, name.length - 1);
         const regexp = new RegExp(`${indexSearchName}\\d{4}.\\d{2}.\\d{2}`);
-        console.log(regexp);
         $scope.dates = {};
         for (let i = 0; i < $scope.indices.length; i++) {
           if($scope.indices[i].indexName.match(regexp)) {

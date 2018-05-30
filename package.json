@@ -1,6 +1,6 @@
 {
   "name": "elopen",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Smooth Elasticsearch index opener",
   "main": "index.js",
   "license": "MIT",
