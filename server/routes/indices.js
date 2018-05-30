@@ -1,6 +1,6 @@
 const elasticsearch = require('elasticsearch');
 
-export default function (server) {
+export default server => {
   const config = server.config();
   const client = new elasticsearch.Client({
     host: config.get('elasticsearch.url'),
@@ -12,8 +12,8 @@ export default function (server) {
       client.cluster.state({
         metric: 'metadata',
         human: true,
-      }, function (err, response) {
-        reply(response);
+      }, (err, response) => {
+        reply(response.metadata.indices);
       });
     }
   });
@@ -30,4 +30,4 @@ export default function (server) {
       });
     }
   });
-}
+};

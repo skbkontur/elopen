@@ -14,13 +14,13 @@
             <h4>Доступные индексы</h4>
             <div class="well">
               <ul class="indexList">
-                  <li ng-repeat="name in names" class="h5">
+                  <li ng-repeat="name in names" class="h6">
                       <a href="" ng-click="searchName(name)"> {{name}} </a>
                   </li>
               </ul>
             </div>
         </div>
-        <div class="col-sm-8">
+        <div class="col-md-8">
             <div class="no-data" ng-if="checkObj(dates)">
               <h5 style="text-align:center;padding-top:50px;">Тут ничего нет. Как жаль</h5>
               <h5 style="text-align:center;">¯\_(ツ)_/¯</h5>
@@ -28,8 +28,8 @@
             <div ng-repeat="(month, indices) in dates" class="elopen-month">
                 <h4>{{ month }}</h4>
                 <div ng-repeat="index in indices" class="elopen-day row" style="padding: 10px">
-                        <div class="index-name col-md-4">
-                          <h6>{{ index.index.name }}</h6>
+                        <div class="index-name col-md-6">
+                          <h7>{{ index.index.name }}</h7>
                         </div>
                         <div class="col-md-4">
                           <button type="button" disabled="true" style="padding: 0; width: 100px;" class="btn btn-success btn-xs" ng-if="index.index.status=='open'">Открыт</button>
