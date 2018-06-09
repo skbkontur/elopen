@@ -62,7 +62,9 @@ uiModules
     $scope.searchName = name => {
       if (name[name.length - 1] === '*') {
         const indexSearchName = name.substr(0, name.length - 1);
-        const regexp = new RegExp(`${indexSearchName}\\d{4}.\\d{2}.\\d{2}`);
+        console.log(indexSearchName);
+        const regexp = new RegExp(`^${indexSearchName}\\d{4}.\\d{2}.\\d{2}`);
+        console.log(regexp);
         $scope.dates = {};
         for (let i = 0; i < $scope.indices.length; i++) {
           if($scope.indices[i].indexName.match(regexp)) {
