@@ -44,7 +44,8 @@ export const extractNames = names => {
   const map = {};
   const result = [];
   for (let i = 0; i < names.length; i++) {
-    if (names[i].indexName[0] !== '.') {
+    const valideDate = new RegExp(`^.*-\\d{4}.\\d{2}.\\d{2}$`);
+    if (names[i].indexName[0] !== '.' && names[i].indexName.match(valideDate)) {
       const name = names[i].indexName.replace(/(\d{4}).(\d{2}).(\d{2})/g, '*');
       if (undefined === map[name]) {
         map[name] = true;

@@ -23,8 +23,9 @@ uiModules
         .then((response) => {
           $scope.indices = buildDate(response.data, commandName);
           for (let i = 0; i < $scope.indices.length; i++) {
-            // Игнорим автосозданные триггер индексы
-            if ($scope.indices[i].indexName[0] !== '.') {
+            const valideDate = new RegExp(`^.*-\\d{4}.\\d{2}.\\d{2}$`);
+            // Игнорим автосозданные триггер индексы и все, у которых дата кривая
+            if ($scope.indices[i].indexName[0] !== '.' && $scope.indices[i].indexName.match(valideDate)) {
               const date = extractDate($scope.indices[i].indexName);
               if(date) $scope.indices[i].date = date.date;
             }
@@ -62,9 +63,7 @@ uiModules
     $scope.searchName = name => {
       if (name[name.length - 1] === '*') {
         const indexSearchName = name.substr(0, name.length - 1);
-        console.log(indexSearchName);
-        const regexp = new RegExp(`^${indexSearchName}\\d{4}.\\d{2}.\\d{2}`);
-        console.log(regexp);
+        const regexp = new RegExp(`^${indexSearchName}\\d{4}.\\d{2}.\\d{2}$`);
         $scope.dates = {};
         for (let i = 0; i < $scope.indices.length; i++) {
           if($scope.indices[i].indexName.match(regexp)) {
