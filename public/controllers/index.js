@@ -8,7 +8,7 @@ class IndicesObj {
 export const buildDate = (data, teamName) => {
   const newOrignData = [];
   for (const key in data) {
-    if (data.hasOwnProperty(key) && key.match(teamName)) {
+    if (data.hasOwnProperty(key) && (key.match(`^${teamName}.*\\d{4}.\\d{2}.\\d{2}$`) || key.match(`.*-${teamName}-\\d{4}.\\d{2}.\\d{2}$`))) {
       const obj = new IndicesObj(key, data[key].state);
       newOrignData.push(obj);
     }

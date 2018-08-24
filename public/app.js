@@ -15,13 +15,48 @@ uiRoutes.when('/', {
 uiModules
   .get('app/indies_view', [])
   .controller('indiesViewHome', ($http, $scope, $filter) => {
+    // Брать имя комнды из браузерной строки уровня edi-elk6.skbkontur.ru = edi
+    // дабы показывать в elopen только их индексы
     const commandName = window.location.hostname.match(/\w*(?=-elk*)/)[0];
+
+    // вынужденный хак который позволяет соотносить одну команду с разными индексами
+    //  например в alko есть индексы egais (почему не alko-egais не справшивайте)
+    const article = {
+      alko: ['egais', 'store', 'market', 'adk'],
+      evrica: 'diadoc'
+    };
 
     $scope.init = () => {
       $http
         .get('../api/elopen/_stats')
         .then((response) => {
-          $scope.indices = buildDate(response.data, commandName);
+          // обработка правил отображения, как еденичного, так и массива
+          const commands = [];
+          const completeCommand = [];
+          if (commandName in article) {
+            // массив
+            if(typeof (article[`${commandName}`]) === 'object') {
+              for (let i = 0, length = article[`${commandName}`].length; i < length; i++) {
+                commands.push(article[`${commandName}`][i]);
+              }
+            }
+            // одна команда
+            else {
+              commands.push(article[`${commandName}`]);
+            }
+            commands.push(commandName);
+          }
+          // формируем итоговый спикок, отправляя в функцию по очереди все элементы массива
+          for (let i = 0, length = commands.length; i < length; i++) {
+            const a = buildDate(response.data, commands[i]);
+            for (let b = 0, len = a.length; b < len; b++) {
+              completeCommand.push(a[b]);
+            }
+          }
+
+          $scope.indices = completeCommand;
+          // console.log($scope.indices);
+
           for (let i = 0; i < $scope.indices.length; i++) {
             const valideDate = new RegExp(`^.*-\\d{4}.\\d{2}.\\d{2}$`);
             // Игнорим автосозданные триггер индексы и все, у которых дата кривая
@@ -38,7 +73,7 @@ uiModules
     };
     $scope.init();
 
-    // for empty obj
+    // Для пустых темлейтов, нужен для шаблона html
     $scope.checkObj = name => {
       return Object.keys(name).length === 0;
     };
