@@ -45,6 +45,8 @@ uiModules
               commands.push(article[`${commandName}`]);
             }
             commands.push(commandName);
+          } else {
+            commands.push(commandName);
           }
           // формируем итоговый спикок, отправляя в функцию по очереди все элементы массива
           for (let i = 0, length = commands.length; i < length; i++) {
