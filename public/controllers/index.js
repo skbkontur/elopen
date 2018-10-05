@@ -1,5 +1,12 @@
 export const getShortLIst = longList => {
-
+  const arr = [];
+  for(let i = 0, len = longList.length; i < len; i++) {
+    const item = longList[i].index.replace(/(\d{4}).(\d{2}).(\d{2})/g, '*');
+    if (arr.indexOf(item) === -1) {
+      arr.push(item);
+    }
+  }
+  return arr;
 };
 
 

@@ -1,5 +1,6 @@
 import { uiModules } from 'ui/modules';
 import uiRoutes from 'ui/routes';
+import { getShortLIst } from './controllers/index';
 import 'angular-ui-bootstrap';
 import { buildDate, extractDate, extractNames } from './controllers';
 import * as data from '../dictionary.json';
@@ -13,13 +14,13 @@ uiRoutes.when('/', {
   controllerAs: 'ctrl'
 });
 
+
 uiModules
   .get('app/indies_view', [])
   .controller('indiesViewHome', ($http, $scope, $filter) => {
     // Брать имя комнды из браузерной строки уровня edi-elk6.skbkontur.ru = edi
     // дабы показывать в elopen только их индексы
     const commandName = window.location.hostname.match(/\w*(?=-elk*)/)[0];
-
     $scope.init = () => {
       const getIndices = dictionary => {
         // формирует строку для поиска в elk
@@ -29,7 +30,6 @@ uiModules
           searchElkString += `${dictionary[i]}*,`;
           searchElkString += `stacktracejs-report-*${dictionary[i]}*,`;
         }
-        console.log(searchElkString);
         // Возвращает все найденные по этой строке индексы
         return new Promise((res, rej) => {
           $http
@@ -43,13 +43,18 @@ uiModules
       if (data[commandName]) {
         getIndices(data[commandName])
         .then(res => {
-          for(const key in res) {
-            console.log(res[key]);
-          }
+          $scope.names = getShortLIst(res);
+          // for(const key in res) {
+          //   console.log(res[key]);
+          // }
         });
         // нет в словаре
       } else {
-        getIndices([]);
+        getIndices([])
+          .then(res => {
+            const test = getShortLIst(res);
+
+          });
       }
 
     };

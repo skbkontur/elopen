@@ -13,7 +13,7 @@ export default server => {
       client.cat.indices({
         format: 'json',
         index: `${name}`
-        // index: 'stacktracejs-report-egais*,stacktracejs-report-alko*'
+        // index: 'stacktracejs-report-egais*,alko*,stacktracejs-report-alko*'
       }, (err, response) => {
         if (err) console.log(err);
         reply(response);
