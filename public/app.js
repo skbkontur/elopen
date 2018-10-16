@@ -45,12 +45,18 @@ uiModules
       if (data[commandName]) {
         getIndices(data[commandName])
         .then(res => {
-          $scope.names = getShortLIst(res);
+          // список слева, краткий
+          $scope.shotlist = getShortLIst(res);
+          $scope.test = {};
+
           $scope.dates = res;
           for(const key in res) {
             const da = checkDate(res[key].index);
-            if (da !== false) res[key].date = da.date;
-            res[key].month = da.month;
+            if (da !== false) {
+              // if ($scope.test.indexOf(da.month) === 1)
+              res[key].date = da.date;
+              res[key].month = da.month;
+            }
           }
           console.log($scope.dates);
         });

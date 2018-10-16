@@ -10,7 +10,7 @@ export const getShortLIst = longList => {
 };
 
 export const checkDate = date => {
-  const regMatch = date.match(`^.*-(19|20)\\d\\d.(0[1-9]|1[012]).(0[1-9]|[12][0-9]|3[01])$`);
+  const regMatch = date.match(`^.*-(19|20|21)\\d\\d.(0[1-9]|1[012]).(0[1-9]|[12][0-9]|3[01])$`);
   if (regMatch) {
     const completeData = new Date(regMatch[0]);
     const monther = new Intl.DateTimeFormat(['ru', 'en'], {
@@ -23,10 +23,10 @@ export const checkDate = date => {
       month: '2-digit'
     });
     const month = monther.format(completeData);
-    const finDate = dater.format(completeData);
+    const date = dater.format(completeData);
     return {
-      month: month,
-      date: finDate,
+      month,
+      date,
     };
   } else {
     return false;
