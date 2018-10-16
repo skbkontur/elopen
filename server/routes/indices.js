@@ -12,6 +12,7 @@ export default server => {
       const name = req.params.name;
       client.cat.indices({
         format: 'json',
+        h: 'index,status',
         index: `${name}`
         // index: 'stacktracejs-report-egais*,alko*,stacktracejs-report-alko*'
       }, (err, response) => {

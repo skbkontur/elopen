@@ -9,26 +9,29 @@ export const getShortLIst = longList => {
   return arr;
 };
 
-
-
-
-// class IndicesObj {
-//   constructor(indexName, indexStatus) {
-//     this.indexName = indexName;
-//     this.status = indexStatus;
-//   }
-// }
-
-// export const buildDate = (data, teamName) => {
-//   const newOrignData = [];
-//   for (const key in data) {
-//     if (data.hasOwnProperty(key) && (key.match(`^${teamName}.*\\d{4}.\\d{2}.\\d{2}$`) || key.match(`.*-${teamName}-\\d{4}.\\d{2}.\\d{2}$`))) {
-//       const obj = new IndicesObj(key, data[key].state);
-//       newOrignData.push(obj);
-//     }
-//   }
-//   return newOrignData;
-// };
+export const checkDate = date => {
+  const regMatch = date.match(`^.*-(19|20)\\d\\d.(0[1-9]|1[012]).(0[1-9]|[12][0-9]|3[01])$`);
+  if (regMatch) {
+    const completeData = new Date(regMatch[0]);
+    const monther = new Intl.DateTimeFormat(['ru', 'en'], {
+      month: 'long',
+      year: 'numeric'
+    });
+    const dater = new Intl.DateTimeFormat(['ru', 'en'], {
+      year: 'numeric',
+      day: '2-digit',
+      month: '2-digit'
+    });
+    const month = monther.format(completeData);
+    const finDate = dater.format(completeData);
+    return {
+      month: month,
+      date: finDate,
+    };
+  } else {
+    return false;
+  }
+};
 
 // export const extractDate = data => {
 //   const parts = data.split('-');
@@ -52,6 +55,26 @@ export const getShortLIst = longList => {
 //     }
 //   }
 //   return undefined;
+// };
+
+
+
+// class IndicesObj {
+//   constructor(indexName, indexStatus) {
+//     this.indexName = indexName;
+//     this.status = indexStatus;
+//   }
+// }
+
+// export const buildDate = (data, teamName) => {
+//   const newOrignData = [];
+//   for (const key in data) {
+//     if (data.hasOwnProperty(key) && (key.match(`^${teamName}.*\\d{4}.\\d{2}.\\d{2}$`) || key.match(`.*-${teamName}-\\d{4}.\\d{2}.\\d{2}$`))) {
+//       const obj = new IndicesObj(key, data[key].state);
+//       newOrignData.push(obj);
+//     }
+//   }
+//   return newOrignData;
 // };
 
 // export const extractNames = names => {

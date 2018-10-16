@@ -1,8 +1,8 @@
 import { uiModules } from 'ui/modules';
 import uiRoutes from 'ui/routes';
-import { getShortLIst } from './controllers/index';
+import { getShortLIst, checkDate } from './controllers/index';
 import 'angular-ui-bootstrap';
-import { buildDate, extractDate, extractNames } from './controllers';
+// import { buildDate, extractDate, extractNames } from './controllers';
 import * as data from '../dictionary.json';
 
 import template from './templates/dashboard.html';
@@ -18,9 +18,11 @@ uiRoutes.when('/', {
 uiModules
   .get('app/indies_view', [])
   .controller('indiesViewHome', ($http, $scope, $filter) => {
-    // Брать имя комнды из браузерной строки уровня edi-elk6.skbkontur.ru = edi
+  // Брать имя комнды из браузерной строки уровня edi-elk6.skbkontur.ru = edi
     // дабы показывать в elopen только их индексы
     const commandName = window.location.hostname.match(/\w*(?=-elk*)/)[0];
+    $scope.dates = {};
+
     $scope.init = () => {
       const getIndices = dictionary => {
         // формирует строку для поиска в elk
@@ -44,27 +46,41 @@ uiModules
         getIndices(data[commandName])
         .then(res => {
           $scope.names = getShortLIst(res);
-          // for(const key in res) {
-          //   console.log(res[key]);
-          // }
+          $scope.dates = res;
+          for(const key in res) {
+            const da = checkDate(res[key].index);
+            if (da !== false) res[key].date = da.date;
+            res[key].month = da.month;
+          }
+          console.log($scope.dates);
         });
         // нет в словаре
       } else {
         getIndices([])
           .then(res => {
             const test = getShortLIst(res);
-
           });
       }
-
     };
-    $scope.init();
 
+    $scope.searchName = name => {
+      return new Promise((res, rej) => {
+        $http
+          .get(`../api/elopen/${name}/_stats`)
+          .then(response => {
+            res(response.data);
+          })
+          .catch(err => rej(err));
+      });
+    };
 
     // Для пустых темлейтов, нужен для шаблона html
-    // $scope.checkObj = name => {
-    //   return Object.keys(name).length === 0;
-    // };
+    $scope.checkObj = name => {
+      return Object.keys(name).length === 0;
+    };
+
+    $scope.init();
+  });
 
     // $scope.openCurrentIndex = indexName => {
     //   indexName.status = 'verifying';
@@ -112,8 +128,6 @@ uiModules
     //     $scope.dates = {};
     //   }
     // };
-
-  });
 
 
       // $scope.init = () => {
@@ -163,4 +177,4 @@ uiModules
       //       $scope.searchName($scope.names[0]);
       //     });
       // };
-      // $scope.init();
+// $scope.init();
