@@ -6,14 +6,18 @@ export default server => {
     host: config.get('elasticsearch.url'),
   });
   server.route({
-    path: '/api/elopen/_stats',
+    path: '/api/elopen/{name}/_stats',
     method: 'GET',
     handler(req, reply) {
-      client.cluster.state({
-        metric: 'metadata',
-        human: true,
+      const name = req.params.name;
+      client.cat.indices({
+        format: 'json',
+        h: 'index,status',
+        index: `${name}`
+        // index: 'stacktracejs-report-egais*,alko*,stacktracejs-report-alko*'
       }, (err, response) => {
-        reply(response.metadata.indices);
+        if (err) console.log(err);
+        reply(response);
       });
     }
   });
@@ -26,6 +30,21 @@ export default server => {
         index: name,
         human: true,
       }, (err, response) => {
+        if (err) console.log(err);
+        reply(response.status);
+      });
+    }
+  });
+  server.route({
+    path: '/api/elopen/index/{name}/_close',
+    method: 'GET',
+    handler(req, reply) {
+      const name = req.params.name;
+      client.indices.close({
+        index: name,
+        human: true,
+      }, (err, response) => {
+        if (err) console.log(err);
         reply(response.status);
       });
     }
