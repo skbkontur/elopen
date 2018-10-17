@@ -2,8 +2,7 @@ import { uiModules } from 'ui/modules';
 import uiRoutes from 'ui/routes';
 import { getShortLIst, checkDate } from './controllers/index';
 import 'angular-ui-bootstrap';
-// import { buildDate, extractDate, extractNames } from './controllers';
-import * as data from '../dictionary.json';
+import * as data from '../dictionary.js';
 
 import template from './templates/dashboard.html';
 
@@ -60,26 +59,31 @@ uiModules
       $scope.dates = result;
     };
 
-    // есть в словаре
     $scope.init = () => {
+      // есть в словаре
       if (data[commandName]) {
         getIndices(data[commandName])
-        .then(res => {
-          // список слева, краткий
-          $scope.all = res;
-          $scope.all = $filter('orderBy')($scope.all, 'index', true);
-          $scope.shotlist = getShortLIst(res);
-          $scope.shotlist = $filter('orderBy')($scope.shotlist);
-          $scope.filterName($scope.shotlist[0]);
-        });
+          .then(res => {
+            // список слева, краткий
+            $scope.shotlist = getShortLIst(res);
+            $scope.shotlist = $filter('orderBy')($scope.shotlist);
+            $scope.all = res;
+            $scope.all = $filter('orderBy')($scope.all, 'index', true);
+          });
         // нет в словаре
       } else {
         getIndices([])
           .then(res => {
-            const test = getShortLIst(res);
+            $scope.shotlist = getShortLIst(res);
+            $scope.shotlist = $filter('orderBy')($scope.shotlist);
+            $scope.all = res;
+            $scope.all = $filter('orderBy')($scope.all, 'index', true);
           });
       }
     };
+
+    // я пока не представляю что там не успевает отгрузится - но пока только так.
+    $scope.init();
     $scope.init();
 
     // Для пустых темлейтов, нужен для шаблона html
@@ -96,10 +100,8 @@ uiModules
             indexName.status = 'open';
           } else {
             indexName.status = 'error';
-            // console.log('Error with elasticsearch on open index');
           }
         });
-      // setTimeout($scope.init, 1000);
     };
 
     $scope.closeCurrentIndex = indexName => {
@@ -108,96 +110,10 @@ uiModules
         .get(`../api/elopen/index/${indexName.index}/_close`)
         .then((response) => {
           if (response.status === 200) {
-            indexName.status = 'open';
+            indexName.status = 'close';
           } else {
             indexName.status = 'error';
-            // console.log('Error with elasticsearch on open index');
           }
         });
-      // setTimeout($scope.init, 1000);
     };
-
   });
-
-
-
-    // search index by name (regexp)
-    // $scope.searchName = name => {
-    //   if (name[name.length - 1] === '*') {
-    //     const indexSearchName = name.substr(0, name.length - 1);
-    //     const regexp = new RegExp(`^${indexSearchName}\\d{4}.\\d{2}.\\d{2}$`);
-    //     $scope.dates = {};
-    //     for (let i = 0; i < $scope.indices.length; i++) {
-    //       if($scope.indices[i].indexName.match(regexp)) {
-    //         const index = $scope.indices[i].indexName;
-    //         const status = $scope.indices[i].status;
-    //         const date = extractDate($scope.indices[i].indexName);
-    //         if (date !== undefined) {
-    //           if ($scope.dates[date.month] === undefined) {
-    //             $scope.dates[date.month] = [];
-    //           }
-    //           $scope.dates[date.month].push({
-    //             date: date.date,
-    //             index: {
-    //               name: index,
-    //               status: status
-    //             }
-    //           });
-    //         }
-    //       }
-    //     }
-    //   }
-    //   else {
-    //     $scope.dates = {};
-    //   }
-    // };
-
-
-      // $scope.init = () => {
-      //   $http
-      //     .get('../api/elopen/_stats')
-      //     .then((response) => {
-      //       // обработка правил отображения, как еденичного, так и массива
-      //       const commands = [];
-      //       const completeCommand = [];
-      //       if (commandName in article) {
-      //         // массив
-      //         if (typeof (article[`${commandName}`]) === 'object') {
-      //           for (let i = 0, length = article[`${commandName}`].length; i < length; i++) {
-      //             commands.push(article[`${commandName}`][i]);
-      //           }
-      //         }
-      //         // одна команда
-      //         else {
-      //           commands.push(article[`${commandName}`]);
-      //         }
-      //         commands.push(commandName);
-      //       } else {
-      //         commands.push(commandName);
-      //       }
-      //       // формируем итоговый спикок, отправляя в функцию по очереди все элементы массива
-      //       for (let i = 0, length = commands.length; i < length; i++) {
-      //         const a = buildDate(response.data, commands[i]);
-      //         for (let b = 0, len = a.length; b < len; b++) {
-      //           completeCommand.push(a[b]);
-      //         }
-      //       }
-
-      //       $scope.indices = completeCommand;
-      //       // console.log($scope.indices);
-
-      //       for (let i = 0; i < $scope.indices.length; i++) {
-      //         const valideDate = new RegExp(`^.*-\\d{4}.\\d{2}.\\d{2}$`);
-      //         // Игнорим автосозданные триггер индексы и все, у которых дата кривая
-      //         if ($scope.indices[i].indexName[0] !== '.' && $scope.indices[i].indexName.match(valideDate)) {
-      //           const date = extractDate($scope.indices[i].indexName);
-      //           if (date) $scope.indices[i].date = date.date;
-      //         }
-      //       }
-      //       $scope.indices = $filter('orderBy')($scope.indices, 'date', true);
-      //       $scope.names = extractNames($scope.indices);
-      //       $scope.names = $filter('orderBy')($scope.names);
-      //       $scope.searchName($scope.names[0]);
-      //     });
-      // };
-// $scope.init();
