@@ -35,4 +35,18 @@ export default server => {
       });
     }
   });
+  server.route({
+    path: '/api/elopen/index/{name}/_close',
+    method: 'GET',
+    handler(req, reply) {
+      const name = req.params.name;
+      client.indices.close({
+        index: name,
+        human: true,
+      }, (err, response) => {
+        if (err) console.log(err);
+        reply(response.status);
+      });
+    }
+  });
 };
