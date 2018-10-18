@@ -2,7 +2,12 @@ import { uiModules } from 'ui/modules';
 import uiRoutes from 'ui/routes';
 import { getShortLIst, checkDate } from './controllers/index';
 import 'angular-ui-bootstrap';
-import * as data from '../dictionary.js';
+// import * as data from '../dictionary.js';
+
+
+const data = {
+  alko: ['egais', 'adk', 'market', 'store']
+};
 
 import template from './templates/dashboard.html';
 
