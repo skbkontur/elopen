@@ -3,10 +3,6 @@ import uiRoutes from 'ui/routes';
 import { getShortLIst, checkDate } from './controllers/index';
 import 'angular-ui-bootstrap';
 import template from './templates/dashboard.html';
-// const data = {
-//   alko: ['egais', 'adk', 'market', 'store']
-// };
-
 
 uiRoutes.enable();
 uiRoutes.when('/', {
@@ -19,21 +15,15 @@ uiRoutes.when('/', {
 uiModules
   .get('app/indies_view', [])
   .controller('indiesViewHome', ($http, $scope, $filter) => {
+    // legacy теперь берем из index pattern
     // Брать имя комнды из браузерной строки уровня edi-elk6.skbkontur.ru = edi
-    const commandName = window.location.hostname.match(/\w*(?=-elk*)/)[0];
+    // const commandName = window.location.hostname.match(/\w*(?=-elk*)/)[0];
+
     // финальный объект данных, нужен для фронта
     $scope.all = {};
     $scope.dates = {};
 
-    // entry point вход для единоразового получения всех индексов
-    const getIndices = dictionary => {
-      let searchElkString = '';
-      dictionary.push(commandName);
-      for (let i = 0; i < dictionary.length; i++) {
-        searchElkString += `${dictionary[i]}*,`;
-        searchElkString += `stacktracejs-report-*${dictionary[i]}*,`;
-      }
-      // Возвращает все найденные по этой строке индексы
+    const getIndices = searchElkString => {
       return new Promise((res, rej) => {
         $http
           .get(`../api/elopen/${searchElkString}/_stats`)
@@ -46,52 +36,38 @@ uiModules
       const result = {};
       for (const key in $scope.all) {
         if ($scope.all[key].index.match(name)) {
-          const da = checkDate($scope.all[key].index);
-          if (da !== false) {
-            if (!result[da.month]) result[da.month] = [];
-            result[da.month].push({
-              date: da.date,
+          const validateIndex = checkDate($scope.all[key].index);
+          if (validateIndex !== false) {
+            if (!result[validateIndex.month]) result[validateIndex.month] = [];
+            result[validateIndex.month].push({
+              date: validateIndex.date,
               index: $scope.all[key].index,
               status: $scope.all[key].status
             });
           }
         }
       }
-      // console.log(result);
       $scope.dates = result;
     };
 
     $scope.init = () => {
-      // get Data from elastic
-      let data = '';
+      const data = [];
       $http
-        .get(`../api/elopen/config`)
+        .get(`https://${window.location.hostname}/api/saved_objects/?type=index-pattern&fields=title&per_page=10000`)
         .then(response => {
-          data = response.data._source;
-          console.log(data);
+          for (let i = 0, len = response.data.saved_objects.length; i < len; i++) {
+            data.push(response.data.saved_objects[i].attributes.title);
+          }
+          const findString = data.join(',');
 
-          // есть в словаре
-          if (data[commandName]) {
-            console.log(data[commandName]);
-            getIndices(data[commandName])
+          getIndices(findString)
           .then(res => {
-            console.log(res);
             // список слева, краткий
             $scope.shotlist = getShortLIst(res);
             $scope.shotlist = $filter('orderBy')($scope.shotlist);
             $scope.all = res;
             $scope.all = $filter('orderBy')($scope.all, 'index', true);
           });
-        // нет в словаре
-          } else {
-            getIndices([])
-          .then(res => {
-            $scope.shotlist = getShortLIst(res);
-            $scope.shotlist = $filter('orderBy')($scope.shotlist);
-            $scope.all = res;
-            $scope.all = $filter('orderBy')($scope.all, 'index', true);
-          });
-          }
         });
     };
 
