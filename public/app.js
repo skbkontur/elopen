@@ -2,14 +2,11 @@ import { uiModules } from 'ui/modules';
 import uiRoutes from 'ui/routes';
 import { getShortLIst, checkDate } from './controllers/index';
 import 'angular-ui-bootstrap';
-// import * as data from '../dictionary.js';
-
-
-const data = {
-  alko: ['egais', 'adk', 'market', 'store']
-};
-
 import template from './templates/dashboard.html';
+// const data = {
+//   alko: ['egais', 'adk', 'market', 'store']
+// };
+
 
 uiRoutes.enable();
 uiRoutes.when('/', {
@@ -65,10 +62,20 @@ uiModules
     };
 
     $scope.init = () => {
-      // есть в словаре
-      if (data[commandName]) {
-        getIndices(data[commandName])
+      // get Data from elastic
+      let data = '';
+      $http
+        .get(`../api/elopen/config`)
+        .then(response => {
+          data = response.data._source;
+          console.log(data);
+
+          // есть в словаре
+          if (data[commandName]) {
+            console.log(data[commandName]);
+            getIndices(data[commandName])
           .then(res => {
+            console.log(res);
             // список слева, краткий
             $scope.shotlist = getShortLIst(res);
             $scope.shotlist = $filter('orderBy')($scope.shotlist);
@@ -76,15 +83,16 @@ uiModules
             $scope.all = $filter('orderBy')($scope.all, 'index', true);
           });
         // нет в словаре
-      } else {
-        getIndices([])
+          } else {
+            getIndices([])
           .then(res => {
             $scope.shotlist = getShortLIst(res);
             $scope.shotlist = $filter('orderBy')($scope.shotlist);
             $scope.all = res;
             $scope.all = $filter('orderBy')($scope.all, 'index', true);
           });
-      }
+          }
+        });
     };
 
     // я пока не представляю что там не успевает отгрузится - но пока только так.

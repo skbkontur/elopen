@@ -22,6 +22,20 @@ export default server => {
     }
   });
   server.route({
+    path: '/api/elopen/config',
+    method: 'GET',
+    handler(req, reply) {
+      client.get({
+        index: 'elopen',
+        type: '_doc',
+        id: 1,
+      }, (err, response) => {
+        if (err) console.log(err);
+        reply(response);
+      });
+    }
+  });
+  server.route({
     path: '/api/elopen/index/{name}/_open',
     method: 'GET',
     handler(req, reply) {
