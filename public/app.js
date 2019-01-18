@@ -3,6 +3,7 @@ import uiRoutes from 'ui/routes';
 import { getShortLIst, checkDate } from './controllers/index';
 import 'angular-ui-bootstrap';
 import template from './templates/dashboard.html';
+import './bootstrap.min.css';
 
 uiRoutes.enable();
 uiRoutes.when('/', {

@@ -12,7 +12,7 @@ export const getShortLIst = longList => {
 export const checkDate = date => {
   const regMatch = date.match(`^.*-((19|20|21)\\d\\d).(0[1-9]|1[012]).(0[1-9]|[12][0-9]|3[01])$`);
   if (regMatch) {
-    const completeData = new Date(`${regMatch[1]}.${regMatch[3]}.${regMatch[4]}`);
+    const completeData = new Date(`${regMatch[1]}-${regMatch[3]}-${regMatch[4]}`);
     const monther = new Intl.DateTimeFormat(['ru', 'en'], {
       month: 'long',
       year: 'numeric'
